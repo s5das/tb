@@ -11,7 +11,6 @@
           TB-PSI
         </div>
         <div style="font-size: 3vh; margin-bottom: 1vh">获得更多服务请登录</div>
-        <img src="../assets/登录.svg" alt="" style="height: 7vh; width: 7vw" />
       </div>
       <div class="box">
         <div class="title">用户登录</div>
