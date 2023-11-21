@@ -1,4 +1,12 @@
 <template>
+<div class="mask" v-show="loading">
+  <div class="pop">
+      <div class="title">正在请求...</div>
+      <div class="loding" v-loading="loading"></div>
+      <el-progress class="pro" :text-inside="true" :stroke-width="26" :percentage="pro" />
+  </div>
+</div>
+
   <div class="main">
     <div class="form">
       <div class="box1">
@@ -66,7 +74,7 @@
         </el-row>
       </div>
       <div style="display: flex">
-        <el-button type="primary" v-loading.fullscreen.lock="fullscreenLoading" @click="openFullScreen1"  color="#000000"
+        <el-button type="primary"  color="#000000" @click="submit"
           >提交</el-button
         >
         <el-button type="primary" @click="clear" color="#d90101"
@@ -84,6 +92,9 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { ElLoading } from 'element-plus'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+let loading = ref(false)
+let pro = ref(0)
+
 
 
 let form = reactive({
@@ -108,13 +119,6 @@ const changecode = () => {
   codeofverify.value = gencode()
 }
 
-const checkCode = () => {
-  if (form.verify !== codeofverify.value) {
-    console.log('error')
-  } else {
-    console.log('success')
-  }
-}
 
 
 const clear = () => {
@@ -123,16 +127,28 @@ const clear = () => {
   form.verify = ''
 }
 
+const getRandomArbitrary = (min, max) => {
+  return Math.random() * (max - min) + min;
+}
 
-const fullscreenLoading = ref(false)
-const openFullScreen1 = () => {
-  fullscreenLoading.value = true
-  setTimeout(() => {
-    fullscreenLoading.value = false
-    router.replace({
-        path: '/TB/result'
+let timer;
+let loding_time;
+const submit =() =>{
+  loading.value = true;
+  pro.value = 0;
+  loding_time = getRandomArbitrary(10000,30000);
+  timer = setInterval(() => {
+     pro.value = pro.value + 10;
+  }, loding_time/10)
+  setTimeout(
+    ()=>{
+     clearInterval(timer)
+     localStorage.setItem('time',JSON.stringify(loding_time))
+     router.replace({
+        path: '/TB/result',
       })
-  }, 10000)
+    },loding_time
+  )
 }
 
 </script>
@@ -154,4 +170,39 @@ const openFullScreen1 = () => {
     }
   }
 }
+.mask{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 98;
+ .pop{
+  position: absolute;
+  padding: 40px;
+  box-sizing: border-box;
+  top: 35vh;
+  left: 30vw;
+  height: 35vh;
+  width: 45vw; 
+  background-color: #fff;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  .title{
+    font-size: 5vh;
+    font-weight: 600;
+  }
+  .loding{
+    height: 8vh;
+  }
+  .pro{
+    width: 20vw;
+  }
+} 
+}
+
 </style>

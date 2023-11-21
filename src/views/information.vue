@@ -1,7 +1,15 @@
 <template>
+  <div class="mask" v-show="loading">
+  <div class="pop">
+      <div class="title">正在请求...</div>
+      <div class="loding" v-loading="loading"></div>
+      <el-progress class="pro" :text-inside="true" :stroke-width="26" :percentage="pro" />
+  </div>
+</div>
+
   <div class="main">
     <el-dialog v-model="dialogTableVisible" title="历史数据集">
-      <el-table :data="gridData" @row-click="jump(4)" v-loading.fullscreen.lock="fullscreenLoading">
+      <el-table :data="gridData" @row-click="jump(4)">
         <el-table-column property="date" label="日期" width="150" />
         <el-table-column property="sf" label="身份" width="200" />
         <el-table-column property="id" label="ID" />
@@ -66,6 +74,8 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 const router = useRouter()
 let dialogTableVisible = ref(false)
+let loading = ref(false)
+let pro = ref(0)
 
 const gridData = [
   {
@@ -90,15 +100,29 @@ const gridData = [
   }
 ]
 
-const fullscreenLoading = ref(false)
-const openFullScreen1 = () => {
-  fullscreenLoading.value = true
-  setTimeout(() => {
-    fullscreenLoading.value = false
-    router.replace({
-        path: '/TB/result'
+const getRandomArbitrary = (min, max) => {
+  return Math.random() * (max - min) + min;
+}
+
+let timer;
+let loding_time;
+const submit =() =>{
+  dialogTableVisible.value = false;
+  loading.value = true;
+  pro.value = 0;
+  loding_time = getRandomArbitrary(10000,30000);
+  timer = setInterval(() => {
+     pro.value = pro.value + 10;
+  }, loding_time/10)
+  setTimeout(
+    ()=>{
+     clearInterval(timer)
+     localStorage.setItem('time',JSON.stringify(loding_time))
+     router.replace({
+        path: '/TB/result',
       })
-  }, 10000)
+    },loding_time
+  )
 }
 
 const jump = (flag) => {
@@ -117,7 +141,7 @@ const jump = (flag) => {
       })
       break
     case 4:
-    openFullScreen1()
+     submit()
       break
   }
 }
@@ -171,5 +195,39 @@ const jump = (flag) => {
       }
     }
   }
+}
+.mask{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 98;
+ .pop{
+  position: absolute;
+  padding: 40px;
+  box-sizing: border-box;
+  top: 35vh;
+  left: 30vw;
+  height: 35vh;
+  width: 45vw; 
+  background-color: #fff;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  .title{
+    font-size: 5vh;
+    font-weight: 600;
+  }
+  .loding{
+    height: 8vh;
+  }
+  .pro{
+    width: 20vw;
+  }
+} 
 }
 </style>

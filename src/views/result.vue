@@ -11,7 +11,7 @@
 </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref ,onMounted} from 'vue'
 import  Download  from '../utils/download';
 let time = ref(0)
@@ -21,7 +21,13 @@ const getRandomArbitrary = (min, max) => {
 }
 
 onMounted(() => {
-  time.value = getRandomArbitrary(10,40).toFixed(2)
+  if(localStorage.getItem('time')){
+    time.value = (JSON.parse(localStorage.getItem('time')) /1000).toFixed(2)
+    localStorage.clear()
+  }else{
+    time.value =  getRandomArbitrary(30,60).toFixed(2)
+  }
+
   rate.value = getRandomArbitrary(10,60).toFixed(2)
 })
 
