@@ -50,9 +50,7 @@ onMounted(() => {
   tableData[0].starttime = (
     Date.now() - getRandomArbitrary(1000 * 60 * 5, 1000 * 60 * 15)
   ).toFixed(2)
-  tableData[0].endtime = (
-    Date.now()
-  ).toFixed(2)
+  tableData[0].endtime = Date.now().toFixed(2)
   tableData[0].rate = (
     ((Date.now() - tableData[0].starttime) /
       (tableData[0].endtime - tableData[0].starttime)) *
@@ -101,25 +99,23 @@ onMounted(() => {
         100
       ) {
         tableData[i].rate = 100
-      } else{
+      } else {
         tableData[i].rate = (
           ((Date.now() - tableData[i].starttime) /
             (tableData[i].endtime - tableData[i].starttime)) *
           100
-        ).toFixed(2)        
+        ).toFixed(2)
       }
 
-    
-    if(((tableData[i].endtime - Date.now()) /1000 /60) <0){
-      tableData[i].tataltime = 0;
-    }else{
-      tableData[i].tataltime = (
-      (tableData[i].endtime - tableData[i].starttime) /
-      1000 /
-      60
-    ).toFixed(2)
-    }
-    
+      if ((tableData[i].endtime - Date.now()) / 1000 / 60 < 0) {
+        tableData[i].lefttime = 0
+      } else {
+        tableData[i].lefttime = (
+          (tableData[i].endtime - Date.now()) /
+          1000 /
+          60
+        ).toFixed(2)
+      }
     }
   }, 1000)
 })
